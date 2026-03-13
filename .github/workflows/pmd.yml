@@ -1,0 +1,32 @@
+name: Apex PMD
+
+on:
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'force-app/**/*.cls'
+      - 'force-app/**/*.trigger'
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  pmd:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pmd/pmd-github-action@v2
+        id: pmd
+        with:
+          version: '7.13.0'
+          sourcePath: 'force-app'
+          rulesets: 'pmd/apex-ruleset.xml'
+          analyzeModifiedFilesOnly: false
+
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: pmd-report.sarif
