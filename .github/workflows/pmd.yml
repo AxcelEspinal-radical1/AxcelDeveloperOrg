@@ -25,16 +25,8 @@ jobs:
           sourcePath: 'force-app'
           rulesets: 'pmd/apex-ruleset.xml'
           analyzeModifiedFilesOnly: false
-        env:
-          PMD_JAVA_OPTS: '-Dpmd.logLevel=DEBUG'
 
-      - name: Check SARIF output
-        if: always()
-        run: |
-          echo "--- SARIF file content ---"
-          cat pmd-report.sarif || echo "File not found"
-
-      - uses: github/codeql-action/upload-sarif@v3
+      - uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: pmd-report.sarif
