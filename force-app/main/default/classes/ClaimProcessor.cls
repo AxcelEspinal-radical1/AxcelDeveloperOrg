@@ -1,7 +1,8 @@
 public class ClaimProcessor {
 
-    public static void processAll() {
+    public static void processAll() { // Static abuse
 
+        // 1. Acoplamiento total a la DB (No es testeable en aislamiento)
         List<Claim__c> claims = [
             SELECT Id, Amount__c, Country__c, Policy_Type__c,
                    (SELECT Id, Status__c FROM Requirements__r)
@@ -11,6 +12,7 @@ public class ClaimProcessor {
 
         for (Claim__c c : claims) {
 
+            // 2. Reglas rígidas encadenadas (Complejidad Ciclomática alta)
             if (c.Country__c == 'US') {
                 if (c.Policy_Type__c == 'Life') {
                     c.Tax_Amount__c = c.Amount__c * 0.10;
@@ -21,6 +23,7 @@ public class ClaimProcessor {
                 c.Tax_Amount__c = c.Amount__c * 0.20;
             }
 
+            // 3. Validación manual (Difícil de extender)
             Boolean allMet = true;
             for (Requirement__c req : c.Requirements__r) {
                 if (req.Status__c != 'Completed') {
@@ -31,8 +34,10 @@ public class ClaimProcessor {
             if (allMet) {
                 c.Status__c = 'Approved';
 
+                // 4. Dependencia oculta (No se puede mockear)
                 ExternalService.notifyStatus(c.Id, 'Approved');
 
+                // 5. DML en loop (No es bulk-safe)
                 update c;
             }
         }
