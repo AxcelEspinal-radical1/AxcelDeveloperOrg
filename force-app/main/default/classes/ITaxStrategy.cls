@@ -1,3 +1,3 @@
 public interface ITaxStrategy {
-    Decimal calculateTax(Decimal amount);
+    Decimal calculateTax(Claim__c claim);
 }
