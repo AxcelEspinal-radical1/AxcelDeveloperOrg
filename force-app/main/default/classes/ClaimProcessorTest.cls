@@ -12,7 +12,11 @@ public with sharing class ClaimProcessorTest {
     claims.add(mockClaim);
 
     ITaxStrategy usTaxStrategy = new USTaxStrategy();
-    ClaimProcessor processor = new ClaimProcessor(usTaxStrategy);
+    IComplianceRule usComplianceRule = new USComplianceRule();
+    ClaimProcessor processor = new ClaimProcessor(
+      usTaxStrategy,
+      usComplianceRule
+    );
 
     Test.startTest();
     processor.processAll(claims);
@@ -37,7 +41,11 @@ public with sharing class ClaimProcessorTest {
     claims.add(mockClaim);
 
     ITaxStrategy usTaxStrategy = new USTaxStrategy();
-    ClaimProcessor processor = new ClaimProcessor(usTaxStrategy);
+    IComplianceRule usComplianceRule = new USComplianceRule();
+    ClaimProcessor processor = new ClaimProcessor(
+      usTaxStrategy,
+      usComplianceRule
+    );
 
     Test.startTest();
     processor.processAll(claims);
@@ -61,7 +69,11 @@ public with sharing class ClaimProcessorTest {
     claims.add(mockClaim);
 
     ITaxStrategy frTaxStrategy = new FRTaxStrategy();
-    ClaimProcessor processor = new ClaimProcessor(frTaxStrategy);
+    IComplianceRule frComplianceRule = new USComplianceRule();
+    ClaimProcessor processor = new ClaimProcessor(
+      frTaxStrategy,
+      frComplianceRule
+    );
 
     Test.startTest();
     processor.processAll(claims);
@@ -76,23 +88,33 @@ public with sharing class ClaimProcessorTest {
 
   @isTest
   static void testComplianceMetPositive() {
-    List<Claim__c> claims = new List<Claim__c>();
-    Claim__c mockClaim = new Claim__c(
-      Status__c = 'Pending',
-      Country__c = 'US',
-      Amount__c = 1000
-    );
-    claims.add(mockClaim);
+    String claimJson =
+      '{' +
+      '"attributes": {"type": "Claim__c"},' +
+      '"Status__c": "Pending",' +
+      '"Country__c": "US",' +
+      '"Amount__c": 1000,' +
+      '"Requirements__r": {' +
+      '"totalSize": 1,' +
+      '"done": true,' +
+      '"records": [' +
+      '{' +
+      '"attributes": {"type": "Requirement__c"},' +
+      '"Status__c": "Completed"' +
+      '}' +
+      ']' +
+      '}' +
+      '}';
 
-    List<Requirement__c> requirements = new List<Requirement__c>();
-    Requirement__c mockRequirement = new Requirement__c(
-      Claim__c = mockClaim.Id,
-      Status__c = 'Completed'
-    );
-    requirements.add(mockRequirement);
+    Claim__c mockClaim = (Claim__c) JSON.deserialize(claimJson, Claim__c.class);
+    List<Claim__c> claims = new List<Claim__c>{ mockClaim };
 
     ITaxStrategy usTaxStrategy = new USTaxStrategy();
-    ClaimProcessor processor = new ClaimProcessor(usTaxStrategy);
+    IComplianceRule usComplianceRule = new USComplianceRule();
+    ClaimProcessor processor = new ClaimProcessor(
+      usTaxStrategy,
+      usComplianceRule
+    );
 
     Test.startTest();
     processor.processAll(claims);
