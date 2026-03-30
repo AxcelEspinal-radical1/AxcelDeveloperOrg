@@ -99,7 +99,7 @@ public with sharing class ClaimProcessorTest {
     Test.stopTest();
 
     System.assertEquals(
-      true,
+      'Approved',
       mockClaim.Status__c,
       'Claim should be compliant when all requirements are completed'
     );
