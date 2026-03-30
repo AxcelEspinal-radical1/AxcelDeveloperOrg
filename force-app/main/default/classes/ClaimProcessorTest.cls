@@ -167,4 +167,45 @@ public with sharing class ClaimProcessorTest {
       'Claim should remain pending when not all requirements are completed'
     );
   }
+
+  @isTest
+  static void testNotificationSending() {
+    String claimJson =
+      '{' +
+      '"attributes": {"type": "Claim__c"},' +
+      '"Status__c": "Pending",' +
+      '"Country__c": "US",' +
+      '"Amount__c": 1000,' +
+      '"Requirements__r": {' +
+      '"totalSize": 1,' +
+      '"done": true,' +
+      '"records": [' +
+      '{' +
+      '"attributes": {"type": "Requirement__c"},' +
+      '"Status__c": "Completed"' +
+      '}' +
+      ']' +
+      '}' +
+      '}';
+
+    Claim__c mockClaim = (Claim__c) JSON.deserialize(claimJson, Claim__c.class);
+    List<Claim__c> claims = new List<Claim__c>{ mockClaim };
+
+    ITaxStrategy usTaxStrategy = new USTaxStrategy();
+    IComplianceRule usComplianceRule = new USComplianceRule();
+    ClaimProcessor processor = new ClaimProcessor(
+      usTaxStrategy,
+      usComplianceRule
+    );
+
+    Test.startTest();
+    processor.processAll(claims);
+    Test.stopTest();
+
+    System.assertEquals(
+      true,
+      mock.wasCalled,
+      'Notification should be sent when claim is approved'
+    );
+  }
 }
