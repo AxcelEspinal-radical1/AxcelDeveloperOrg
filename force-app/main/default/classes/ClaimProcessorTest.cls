@@ -1,6 +1,6 @@
-public with sharing class ClaimProcessorTest {
  @isTest 
- static void testUSLifePolicyTax() {
+public with sharing class ClaimProcessorTest {
+  @isTest static void testUSLifePolicyTax() {
     Claim__c mockClaim = new Claim__c(
         Status__c = 'Pending',
         Country__c = 'US',
