@@ -12,6 +12,6 @@ public with sharing class ClaimProcessorTest {
     ClaimProcessor.processAll();
     Test.stopTest();
 
-    System.assert(mockClaim.Tax_Amount__c == 100, 'Expected tax amount to be 100 for US Life policy');
+    System.assertEquals(100, mockClaim.Tax_Amount__c, 'Tax amount should be 10% of the claim amount for US Life policies');
  }
 }
