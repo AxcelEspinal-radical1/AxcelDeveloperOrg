@@ -101,7 +101,7 @@ public with sharing class ClaimProcessorTest {
     System.assertEquals(
       'Approved',
       mockClaim.Status__c,
-      'Claim should be compliant when all requirements are completed'
+      'Claim should be approved when all requirements are completed'
     );
   }
 }
