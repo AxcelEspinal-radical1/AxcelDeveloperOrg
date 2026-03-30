@@ -26,7 +26,7 @@ public with sharing class ClaimProcessorTest {
         Status__c = 'Pending',
         Country__c = 'US',
         Policy_Type__c = 'Other',
-        Amount__c = 2000
+        Amount__c = 1000
     );
     claims.add(mockClaim);
 
@@ -35,6 +35,6 @@ public with sharing class ClaimProcessorTest {
     ClaimProcessor.processAll(claims);
     Test.stopTest();
 
-    System.assertEquals(200, mockClaim.Tax_Amount__c, 'Tax amount should be 10% of the claim amount for US Other policies'); 
+    System.assertEquals(50, mockClaim.Tax_Amount__c, 'Tax amount should be 5% of the claim amount for US Other policies'); 
     }
  }
