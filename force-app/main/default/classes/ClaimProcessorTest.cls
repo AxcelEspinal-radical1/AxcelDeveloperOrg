@@ -78,7 +78,7 @@ public with sharing class ClaimProcessorTest {
   static void testComplianceMetPositive() {
     List<Claim__c> claims = new List<Claim__c>();
     Claim__c mockClaim = new Claim__c(
-      Status__c = 'Approved',
+      Status__c = 'Pending',
       Country__c = 'US',
       Amount__c = 1000
     );
