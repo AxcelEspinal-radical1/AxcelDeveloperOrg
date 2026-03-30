@@ -11,8 +11,11 @@ public with sharing class ClaimProcessorTest {
     );
     claims.add(mockClaim);
 
+    ITaxStrategy usTaxStrategy = new USTaxStrategy();
+    ClaimProcessor processor = new ClaimProcessor(usTaxStrategy);
+
     Test.startTest();
-    ClaimProcessor.processAll(claims);
+    processor.processAll(claims);
     Test.stopTest();
 
     System.assertEquals(
@@ -33,8 +36,11 @@ public with sharing class ClaimProcessorTest {
     );
     claims.add(mockClaim);
 
+    ITaxStrategy usTaxStrategy = new USTaxStrategy();
+    ClaimProcessor processor = new ClaimProcessor(usTaxStrategy);
+
     Test.startTest();
-    ClaimProcessor.processAll(claims);
+    processor.processAll(claims);
     Test.stopTest();
 
     System.assertEquals(
@@ -53,8 +59,12 @@ public with sharing class ClaimProcessorTest {
       Amount__c = 1000
     );
     claims.add(mockClaim);
+
+    ITaxStrategy frTaxStrategy = new FRTaxStrategy();
+    ClaimProcessor processor = new ClaimProcessor(frTaxStrategy);
+
     Test.startTest();
-    ClaimProcessor.processAll(claims);
+    processor.processAll(claims);
     Test.stopTest();
 
     System.assertEquals(

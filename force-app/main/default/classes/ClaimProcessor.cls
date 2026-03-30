@@ -1,14 +1,13 @@
 public with sharing class ClaimProcessor {
-  private USTaxStrategy strategy;
+  private ITaxStrategy taxStrategy;
 
-  public ClaimProcessor() {
-    this.strategy = new USTaxStrategy();
+  public ClaimProcessor(ITaxStrategy strategy) {
+    this.taxStrategy = strategy;
   }
 
-  public static void processAll(List<Claim__c> claims) {
-    ClaimProcessor processor = new ClaimProcessor();
+  public void processAll(List<Claim__c> claims) {
     for (Claim__c claim : claims) {
-      claim.Tax_Amount__c = processor.strategy.calculateTax(claim);
+      claim.Tax_Amount__c = taxStrategy.calculateTax(claim);
     }
   }
 }
