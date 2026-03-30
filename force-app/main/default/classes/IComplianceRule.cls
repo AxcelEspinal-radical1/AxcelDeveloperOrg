@@ -1,5 +1,3 @@
-public with sharing class IComplianceRule {
-    public IComplianceRule() {
-
-    }
+public interface IComplianceRule {
+  boolean isCompliant(Claim__c claim);
 }
