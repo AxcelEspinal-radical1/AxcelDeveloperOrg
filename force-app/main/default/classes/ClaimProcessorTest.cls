@@ -11,11 +11,13 @@ public with sharing class ClaimProcessorTest {
     );
     claims.add(mockClaim);
 
+    MockNotification mock = new MockNotification();
     ITaxStrategy usTaxStrategy = new USTaxStrategy();
     IComplianceRule usComplianceRule = new USComplianceRule();
     ClaimProcessor processor = new ClaimProcessor(
       usTaxStrategy,
-      usComplianceRule
+      usComplianceRule,
+      mock
     );
 
     Test.startTest();
@@ -40,13 +42,14 @@ public with sharing class ClaimProcessorTest {
     );
     claims.add(mockClaim);
 
+    MockNotification mock = new MockNotification();
     ITaxStrategy usTaxStrategy = new USTaxStrategy();
     IComplianceRule usComplianceRule = new USComplianceRule();
     ClaimProcessor processor = new ClaimProcessor(
       usTaxStrategy,
-      usComplianceRule
+      usComplianceRule,
+      mock
     );
-
     Test.startTest();
     processor.processAll(claims);
     Test.stopTest();
@@ -68,11 +71,13 @@ public with sharing class ClaimProcessorTest {
     );
     claims.add(mockClaim);
 
+    MockNotification mock = new MockNotification();
     ITaxStrategy frTaxStrategy = new FRTaxStrategy();
     IComplianceRule frComplianceRule = new USComplianceRule();
     ClaimProcessor processor = new ClaimProcessor(
       frTaxStrategy,
-      frComplianceRule
+      frComplianceRule,
+      mock
     );
 
     Test.startTest();
@@ -168,11 +173,10 @@ public with sharing class ClaimProcessorTest {
     );
   }
 
-  @isTest
   public class MockNotification implements INotificationService {
     public Boolean wasCalled = false;
 
-    public void sendNotification(String message) {
+    public void sendNotification(String message, Claim__c claim) {
       wasCalled = true;
     }
   }
