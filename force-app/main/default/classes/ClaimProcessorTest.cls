@@ -114,11 +114,13 @@ public with sharing class ClaimProcessorTest {
     Claim__c mockClaim = (Claim__c) JSON.deserialize(claimJson, Claim__c.class);
     List<Claim__c> claims = new List<Claim__c>{ mockClaim };
 
+    MockNotification mock = new MockNotification();
     ITaxStrategy usTaxStrategy = new USTaxStrategy();
     IComplianceRule usComplianceRule = new USComplianceRule();
     ClaimProcessor processor = new ClaimProcessor(
       usTaxStrategy,
-      usComplianceRule
+      usComplianceRule,
+      mock
     );
 
     Test.startTest();
@@ -155,11 +157,13 @@ public with sharing class ClaimProcessorTest {
     Claim__c mockClaim = (Claim__c) JSON.deserialize(claimJson, Claim__c.class);
     List<Claim__c> claims = new List<Claim__c>{ mockClaim };
 
+    MockNotification mock = new MockNotification();
     ITaxStrategy usTaxStrategy = new USTaxStrategy();
     IComplianceRule usComplianceRule = new USComplianceRule();
     ClaimProcessor processor = new ClaimProcessor(
       usTaxStrategy,
-      usComplianceRule
+      usComplianceRule,
+      mock
     );
 
     Test.startTest();
