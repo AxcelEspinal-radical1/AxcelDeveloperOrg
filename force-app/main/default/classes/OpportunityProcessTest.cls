@@ -12,7 +12,7 @@ public with sharing class OpportunityProcessTest {
 
     System.assert(
       testOpportunity.StageName == 'Qualification',
-      'The opportunity stage should be updated to Qualification'
+      'The opportunity stage should be updated to Qualification adding the category Technology'
     );
   }
 }
