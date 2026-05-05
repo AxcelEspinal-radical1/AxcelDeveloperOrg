@@ -2,11 +2,9 @@
 public with sharing class OpportunityProcessTest {
   @isTest
   static void testOpportunityProcess() {
-    Opportunity testOpportunity = new Opportunity(
-      Name = 'Test Opportunity',
-      StageName = 'Prospecting'
+    Opportunity testOpportunity = TestDataFactory.createOpportunity(
+      'Test Opportunity'
     );
-    insert testOpportunity;
 
     Test.startTest();
     OpportunityProcess.processOpportunity(testOpportunity.Id);
