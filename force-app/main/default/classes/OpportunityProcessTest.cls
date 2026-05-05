@@ -7,7 +7,7 @@ public with sharing class OpportunityProcessTest {
     );
 
     Test.startTest();
-    OpportunityProcess.processOpportunity(testOpportunity.Id);
+    OpportunityProcess.processOpportunity(testOpportunity);
     Test.stopTest();
 
     System.assert(
