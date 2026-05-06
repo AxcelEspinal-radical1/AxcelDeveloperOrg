@@ -1,7 +1,7 @@
 @isTest
 public with sharing class OpportunityProcessTest {
   @isTest
-  static void testOpportunityProcess() {
+  static void testOpportunityProcess__TechnologyEndpoint() {
     Opportunity testOpportunity = TestDataFactory.createOpportunity(
       'Test Opportunity'
     );
