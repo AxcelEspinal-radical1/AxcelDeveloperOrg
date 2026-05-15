@@ -125,4 +125,33 @@ global with sharing class OpportunityProcessTest {
       'The stage should remain Prospecting if the callout fails'
     );
   }
+
+  @isTest
+  static void testOpportunityProcess_Bulk_200Records() {
+    List<Opportunity> testOpps = TestDataFactory.createOpportunities(
+      200,
+      'Prospecting'
+    );
+
+    Map<String, String> mockMap = new Map<String, String>();
+    for (Opportunity opp : testOpps) {
+      mockMap.put(String.valueOf(opp.Id), 'Technology');
+    }
+
+    Test.setMock(
+      HttpCalloutMock.class,
+      new DynamicHttpCalloutMock(200, JSON.serialize(mockMap))
+    );
+
+    Test.startTest();
+    OpportunityProcess.processOpportunities(testOpps);
+    Test.stopTest();
+
+    Integer qualificationCount = [
+      SELECT COUNT()
+      FROM Opportunity
+      WHERE StageName = 'Qualification'
+    ];
+    System.assertEquals(200, qualificationCount, 'Count mismatch');
+  }
 }
