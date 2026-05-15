@@ -58,4 +58,71 @@ global with sharing class OpportunityProcessTest {
       'Stage should have changed since the mock returns Technology.'
     );
   }
+
+  @isTest
+  static void testOpportunityProcess_BusinessMistake_OtherCategory() {
+    List<Opportunity> testOpps = TestDataFactory.createOpportunities(
+      1,
+      'Prospecting'
+    );
+    Opportunity testOpportunity = testOpps[0];
+
+    String jsonResponse = '{"category": "Hardware"}';
+    Test.setMock(
+      HttpCalloutMock.class,
+      new DynamicHttpCalloutMock(200, jsonResponse)
+    );
+
+    Test.startTest();
+    OpportunityProcess.processOpportunity(testOpportunity);
+    Test.stopTest();
+
+    Opportunity updatedOpp = [
+      SELECT StageName
+      FROM Opportunity
+      WHERE Id = :testOpportunity.Id
+    ];
+    System.assertEquals(
+      'Prospecting',
+      updatedOpp.StageName,
+      'The stage should remain Prospecting when the category is not Technology'
+    );
+  }
+
+  @isTest
+  static void testOpportunityProcess_Exception_HttpError() {
+    List<Opportunity> testOpps = TestDataFactory.createOpportunities(
+      1,
+      'Prospecting'
+    );
+    Opportunity testOpportunity = testOpps[0];
+
+    Test.setMock(
+      HttpCalloutMock.class,
+      new DynamicHttpCalloutMock(500, 'Internal Server Error')
+    );
+
+    Test.startTest();
+    try {
+      OpportunityProcess.processOpportunity(testOpportunity);
+    } catch (Exception e) {
+      System.assert(
+        false,
+        'The process should handle exceptions gracefully and not throw them to the user. Error: ' +
+        e.getMessage()
+      );
+    }
+    Test.stopTest();
+
+    Opportunity updatedOpp = [
+      SELECT StageName
+      FROM Opportunity
+      WHERE Id = :testOpportunity.Id
+    ];
+    System.assertEquals(
+      'Prospecting',
+      updatedOpp.StageName,
+      'The stage should remain Prospecting if the callout fails'
+    );
+  }
 }
