@@ -1,6 +1,5 @@
 @isTest
-public with sharing class OpportunityProcessTest {
-  @isTest
+global with sharing class OpportunityProcessTest {
   global class MockResponseGenerator implements HttpCalloutMock {
     HttpResponse res = new HttpResponse();
 
@@ -12,7 +11,6 @@ public with sharing class OpportunityProcessTest {
     }
   }
 
-  @isTest
   public class DynamicHttpCalloutMock implements HttpCalloutMock {
     private Integer statusCode;
     private String responseBody;
@@ -32,18 +30,32 @@ public with sharing class OpportunityProcessTest {
   }
 
   @isTest
-  static void testOpportunityProcess__TechnologyEndpoint() {
-    Opportunity testOpportunity = TestDataFactory.createOpportunity(
-      'Test Opportunity'
+  static void testOpportunityProcess_HappyPath_TechnologyCategory() {
+    List<Opportunity> testOpps = TestDataFactory.createOpportunities(
+      1,
+      'Prospecting'
+    );
+    Opportunity testOpportunity = testOpps[0];
+
+    String jsonResponse = '{"category": "Technology"}';
+    Test.setMock(
+      HttpCalloutMock.class,
+      new DynamicHttpCalloutMock(200, jsonResponse)
     );
 
     Test.startTest();
     OpportunityProcess.processOpportunity(testOpportunity);
     Test.stopTest();
 
-    System.assert(
-      testOpportunity.StageName == 'Qualification',
-      'The opportunity stage should be updated to Qualification adding the category Technology'
+    Opportunity updatedOpp = [
+      SELECT StageName
+      FROM Opportunity
+      WHERE Id = :testOpportunity.Id
+    ];
+    System.assertEquals(
+      'Qualification',
+      updatedOpp.StageName,
+      'Stage should have changed since the mock returns Technology.'
     );
   }
 }
