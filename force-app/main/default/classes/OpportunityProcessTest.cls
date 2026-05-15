@@ -13,6 +13,25 @@ public with sharing class OpportunityProcessTest {
   }
 
   @isTest
+  public class DynamicHttpCalloutMock implements HttpCalloutMock {
+    private Integer statusCode;
+    private String responseBody;
+
+    public DynamicHttpCalloutMock(Integer statusCode, String responseBody) {
+      this.statusCode = statusCode;
+      this.responseBody = responseBody;
+    }
+
+    public HttpResponse respond(HttpRequest req) {
+      HttpResponse res = new HttpResponse();
+      res.setHeader('Content-Type', 'application/json');
+      res.setBody(this.responseBody);
+      res.setStatusCode(this.statusCode);
+      return res;
+    }
+  }
+
+  @isTest
   static void testOpportunityProcess__TechnologyEndpoint() {
     Opportunity testOpportunity = TestDataFactory.createOpportunity(
       'Test Opportunity'
