@@ -1,16 +1,5 @@
 @isTest
-global with sharing class OpportunityProcessTest {
-  global class MockResponseGenerator implements HttpCalloutMock {
-    HttpResponse res = new HttpResponse();
-
-    global HttpResponse respond(HttpRequest req) {
-      res.setHeader('Content-Type', 'application/json');
-      res.setBody('{"example": "test"}');
-      res.setStatusCode(200);
-      return res;
-    }
-  }
-
+public with sharing class OpportunityProcessTest {
   public class DynamicHttpCalloutMock implements HttpCalloutMock {
     private Integer statusCode;
     private String responseBody;
@@ -37,14 +26,16 @@ global with sharing class OpportunityProcessTest {
     );
     Opportunity testOpportunity = testOpps[0];
 
-    String jsonResponse = '{"category": "Technology"}';
+    Map<String, String> mockMap = new Map<String, String>{
+      String.valueOf(testOpportunity.Id) => 'Technology'
+    };
     Test.setMock(
       HttpCalloutMock.class,
-      new DynamicHttpCalloutMock(200, jsonResponse)
+      new DynamicHttpCalloutMock(200, JSON.serialize(mockMap))
     );
 
     Test.startTest();
-    OpportunityProcess.processOpportunity(testOpportunity);
+    OpportunityProcess.processOpportunities(testOpps);
     Test.stopTest();
 
     Opportunity updatedOpp = [
@@ -67,14 +58,16 @@ global with sharing class OpportunityProcessTest {
     );
     Opportunity testOpportunity = testOpps[0];
 
-    String jsonResponse = '{"category": "Hardware"}';
+    Map<String, String> mockMap = new Map<String, String>{
+      String.valueOf(testOpportunity.Id) => 'Hardware'
+    };
     Test.setMock(
       HttpCalloutMock.class,
-      new DynamicHttpCalloutMock(200, jsonResponse)
+      new DynamicHttpCalloutMock(200, JSON.serialize(mockMap))
     );
 
     Test.startTest();
-    OpportunityProcess.processOpportunity(testOpportunity);
+    OpportunityProcess.processOpportunities(testOpps);
     Test.stopTest();
 
     Opportunity updatedOpp = [
@@ -104,7 +97,7 @@ global with sharing class OpportunityProcessTest {
 
     Test.startTest();
     try {
-      OpportunityProcess.processOpportunity(testOpportunity);
+      OpportunityProcess.processOpportunities(testOpps);
     } catch (Exception e) {
       System.assert(
         false,
