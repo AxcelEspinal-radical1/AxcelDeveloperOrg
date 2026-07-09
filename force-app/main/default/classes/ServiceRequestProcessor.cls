@@ -6,16 +6,24 @@ public class ServiceRequestProcessor {
       WHERE Status__c IN ('New', 'In Progress')
     ];
 
+    List<Service_Request__c> requestsToUpdate = new List<Service_Request__c>();
+
     for (Service_Request__c req : requests) {
+      String newPriority = 'Low';
       if (req.Region__c == 'North' && req.Score__c > 80) {
-        req.Priority__c = 'High';
+        newPriority = 'High';
       } else if (req.Score__c > 50) {
-        req.Priority__c = 'Medium';
-      } else {
-        req.Priority__c = 'Low';
+        newPriority = 'Medium';
+      }
+
+      if (req.Priority__c != newPriority) {
+        req.Priority__c = newPriority;
+        requestsToUpdate.add(req);
       }
     }
 
-    update requests;
+    if (!requestsToUpdate.isEmpty()) {
+      update requestsToUpdate;
+    }
   }
 }
