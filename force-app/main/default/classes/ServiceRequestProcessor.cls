@@ -3,7 +3,7 @@ public class ServiceRequestProcessor {
     List<Service_Request__c> requests = [
       SELECT Id, Status__c, Priority__c, Region__c, CreatedDate, Score__c
       FROM Service_Request__c
-      WHERE Status__c != 'Closed'
+      WHERE Status__c IN ('New', 'In Progress')
     ];
 
     for (Service_Request__c req : requests) {
